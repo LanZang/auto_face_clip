@@ -1,0 +1,46 @@
+This project is based on the face_recognition library of python. (Basically python3).
+To install the face_recognition library for python3 you need to reference to:
+
+https://github.com/ageitgey/face_recognition
+
+This tool is designed to be running as a daemon.
+The command interface from 2 parts:
+  a) Http server
+  b) Udp listener
+
+I will use udp first.
+The command and the response will be in the message's payload and in JSON format.
+https://www.json.org/index.html
+
+the command includes mandatory parts:
+  a) command -> indicates the command type.
+    1) train
+    2) discern
+    3) discard --> discard the data of the people in database.
+  b) datatype -> indicates what the data type is:
+    1) b64 -> The data will be include in this message and in base64 format.
+    2) file -> the data will be in file
+    3) url -> the data can be retrieved by url (http/https)
+  c) data -> indicates what the data is. Depends on the datatype.
+Option parts:
+  d) timestamp -> the timestamp in seconds from epoch time. Will used against replay attack.
+  e) sign -> the signation used to authenticate the sender.
+  f) id -> the userid which indicates the people in the picutres, used in train or discard mode.
+    [Note] In training mode the picture shall be only ONE people. Otherwise, the result is unpredictable.
+  
+The response includes mandatory parts:
+  a) code -> 0 indicates success. Others indicates a failure.
+    401 -> indicates challenge mode to authenticate the sender.
+  b) response -> indicates the reponse type:
+    1) train
+    2) discern
+    3) discard
+  c) reason -> text indicates the success or failure reason.
+  d) result -> text indicates the results of the training:
+    1) good -> work done.
+    2) wrong people -> the people in the data does not match the previous inputs.
+    3) unknown -> other reason.
+The response includes option parts:
+  e) Challenge string -> used in challenge response mode.
+  
+    
